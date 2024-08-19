@@ -1,0 +1,150 @@
+﻿@model IEnumerable<HoNgocHai_2122110473_ASP.NET.Models.CartModels>
+
+@{
+    ViewBag.Title = "Danh sách giỏ hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+    function removeFromCart(productId) {
+    $.ajax({
+        type: "POST",
+        url: '@Url.Action("Remove", "Cart")',
+        data: { id: productId },
+        success: function(response) {
+            if (response.success) {
+                alert(response.message);
+                // Cập nhật số lượng giỏ hàng trong giao diện người dùng
+                $('#CartCount').text(response.cartCount);
+                // Xóa hàng hóa từ giao diện nếu cần
+                // Bạn có thể thêm mã để xóa phần tử khỏi danh sách trên giao diện
+                // Ví dụ: xóa hàng hóa khỏi table row
+                $('tr[data-id="' + productId + '"]').remove();
+            } else {
+                alert("Lỗi: " + response.message);
+            }
+        },
+        error: function() {
+            alert("Lỗi khi xóa sản phẩm khỏi giỏ hàng!");
+        }
+    });
+}
+
+</script>
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y">
+    <div class="container">
+        <div class="row">
+            <main class="col-md-9">
+                <div class="card">
+                    <table class="table table-borderless table-shopping-cart">
+                        <thead class="text-muted">
+                            <tr class="small text-uppercase">
+                                <th scope="col">Sản phẩm</th>
+                                <th scope="col" width="120">Số lượng</th>
+                                <th scope="col" width="120">Giá</th>
+                                <th scope="col" class="text-right" width="200"> </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                double? allPrice = 0;
+                                foreach (var item in Model)
+                                {
+                                    if (item.HangHoa.DonGia != 0)
+                                    {
+                                        var discountedPrice = item.HangHoa.DonGia - ( item.HangHoa.DonGia * item.HangHoa.GiamGia );
+                                        var totalPrice = discountedPrice * item.Quantity;
+                                        allPrice += totalPrice;
+                                        <tr>
+                                            <td>
+                                                <figure class="itemside">
+                                                    <div class="aside"><img src="~/Content/images/items/@item.HangHoa.Hinh" class="img-sm"></div>
+                                                    <figcaption class="info">
+                                                        <a href="@Url.Action("Details", "Products", new { id = item.HangHoa.MaHH })" class="title text-dark">@item.HangHoa.MoTa</a>
+                                                    </figcaption>
+                                                </figure>
+                                            </td>
+                                            <td>
+                                                <input type="text" value="@item.Quantity" />
+                                            </td>
+                                            <td>
+                                                <span class="price ">
+                                                    @discountedPrice.Value.ToString("C0")
+                                                </span>
+                                            </td>
+
+                                            <td class="text-right">
+                                                <a data-original-title="Lưu vào danh sách yêu thích" title="" href="" class="btn btn-light" data-toggle="tooltip"> <i class="fa fa-heart"></i></a>
+                                                <a href="#" class="btn btn-light btn-round" onclick="removeFromCart(@item.HangHoa.MaHH); return false;">
+                                                    Xóa
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+
+                            }
+                            else
+                            {
+                                <div>
+                                    <p>Không có sản phẩm trong giỏ hàng</p>
+                                </div>
+                            }
+                        </tbody>
+                    </table>
+
+                    <div class="card-body border-top">
+                        <a href="@Url.Action("Payment", "Cart")" class="btn btn-primary float-md-right">Thanh toán <i class="fa fa-chevron-right"></i></a>
+                        <a href="@Url.Action("Index", "Products")" class="btn btn-light"><i class="fa fa-chevron-left"></i> Tiếp tục mua sắm</a>
+                    </div>
+                </div> <!-- card.// -->
+
+                <div class="alert alert-success mt-3">
+                    <p class="icontext"><i class="icon text-success fa fa-truck"></i> Giao hàng miễn phí trong vòng 1-2 tuần</p>
+                </div>
+
+            </main> <!-- col.// -->
+            <aside class="col-md-3">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <form>
+                            <div class="form-group">
+                                <label>Có mã giảm giá?</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="" placeholder="Mã giảm giá">
+                                    <span class="input-group-append">
+                                        <button class="btn btn-primary">Áp dụng</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </form>
+                    </div> <!-- card-body.// -->
+                </div>  <!-- card .// -->
+                <div class="card-body">
+                    <dl class="dlist-align">
+                        <dt>Tổng giá:</dt>
+                        <dd class="text-right">@ViewBag.TotalPrice VND</dd>
+                    </dl>
+                    <dl class="dlist-align">
+                        <dt>Giảm giá:</dt>
+                        <dd class="text-right">@ViewBag.Discount VND</dd>
+                    </dl>
+                    <dl class="dlist-align">
+                        <dt>Tổng cộng:</dt>
+                        <dd class="text-right">@ViewBag.GrandTotal VND</dd>
+                    </dl>
+                    <hr>
+                    <p class="text-center mb-3">
+                        <img src="~/Content/images/misc/payments.png" height="26">
+                    </p>
+                </div>
+            </aside> <!-- col.// -->
+        </div>
+
+    </div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->

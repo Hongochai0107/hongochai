@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewBag.Title = "PaymentSuccess";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="text-center text-success">Thanh Toán Thành Công!</h2>
+                        <p class="text-center">Cảm ơn bạn đã mua sắm. Đơn hàng của bạn đã được đặt thành công và đang được xử lý.</p>
+                        <hr>
+                        @*<div class="text-center">
+                                <p>Số Đơn Hàng: <strong>@ViewBag.OrderNumber</strong></p>
+                                <p>Tổng Số Tiền Đã Thanh Toán: <strong>USD @ViewBag.TotalAmount</strong></p>
+                                <p>Dự Đoán Ngày Giao Hàng: <strong>@ViewBag.DeliveryDate</strong></p>
+                            </div>*@
+                        <div class="text-center mt-4">
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Tiếp Tục Mua Sắm</a>
+                            @*<a href="@Url.Action("OrderHistory", "User")" class="btn btn-secondary">Xem Lịch Sử Đơn Hàng</a>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->

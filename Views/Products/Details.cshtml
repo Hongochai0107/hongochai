@@ -1,0 +1,159 @@
+﻿@model HoNgocHai_2122110473_ASP.NET.Models.HangHoa
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<style>
+    /* Ẩn các nút mũi tên trong input type="number" trên tất cả các trình duyệt */
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        // Tăng số lượng sản phẩm
+        $('#button-plus').click(function () {
+            let quantityInput = $('#ipQuantity');
+            let currentValue = parseInt(quantityInput.val());
+            if (!isNaN(currentValue)) {
+                quantityInput.val(currentValue + 1);
+            }
+        });
+
+        // Giảm số lượng sản phẩm
+        $('#button-minus').click(function () {
+            let quantityInput = $('#ipQuantity');
+            let currentValue = parseInt(quantityInput.val());
+            if (!isNaN(currentValue) && currentValue > 1) {
+                quantityInput.val(currentValue - 1);
+            }
+        });
+
+        // Thêm sản phẩm vào giỏ hàng
+        $("#addtocart").click(function () {
+            var model = {
+                Id: '@Model.MaHH', // Lấy ID sản phẩm từ Model
+                Quantity: $("#ipQuantity").val() // Lấy số lượng từ input
+            };
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToCart", "Cart")',
+                data: model, // Không cần JSON.stringify
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        alert("Thêm vào giỏ hàng thành công!");
+                        var currentCount = parseInt($('#CartCount').text());
+                        $('#CartCount').text(currentCount + parseInt(model.Quantity)); // Cập nhật số lượng giỏ hàng
+                    } else {
+                        alert("Lỗi: " + response.message);
+                    }
+                },
+                error: function () {
+                    alert("Lỗi trong khi thêm vào giỏ hàng!");
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+
+<section class="section-content bg-white padding-y">
+    <div class="container">
+
+        <!-- ============================ CHI TIẾT SẢN PHẨM ======================== -->
+        <div class="row">
+            <aside class="col-md-6">
+                <div class="card">
+                    <article class="gallery-wrap">
+                        <div class="img-big-wrap">
+                            <div> <a href="#"><img src="~/Content/images/items/@Model.Hinh" alt="@Model.TenHH"></a></div>
+                        </div> <!-- slider-product.// -->
+                        <div class="thumbs-wrap">
+                            <a href="#" class="item-thumb"> <img src="~/Content/images/items/@Model.Hinh" alt="@Model.TenHH"></a>
+                            <!-- Thêm nhiều hình thu nhỏ nếu có -->
+                        </div> <!-- slider-nav.// -->
+                    </article> <!-- gallery-wrap .end// -->
+                </div> <!-- card.// -->
+            </aside>
+            <main class="col-md-6">
+                <article class="product-info-aside">
+
+                    <h2 class="title mt-3">@Model.TenHH</h2>
+
+                    <div class="rating-wrap my-3">
+                        <ul class="rating-stars">
+                            <li style="width:80%" class="stars-active">
+                                <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </li>
+                            <li>
+                                <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </li>
+                        </ul>
+                        <small class="label-rating text-muted">132 đánh giá</small>
+                        <small class="label-rating text-success"> <i class="fa fa-clipboard-check"></i> 154 đơn hàng </small>
+                    </div> <!-- rating-wrap.// -->
+
+                    <div class="mb-3">
+                        <var class="price h4">@Model.DonGia VND</var>
+                        <span class="text-muted">USD @Model.GiamGia đã bao gồm thuế</span>
+                    </div> <!-- price-detail-wrap .// -->
+
+                    <dl class="row">
+                        <dt class="col-sm-3">Danh mục</dt>
+                        <dd class="col-sm-9">@Model.MaLoai</dd>
+
+                        <dt class="col-sm-3">Thương hiệu</dt>
+                        <dd class="col-sm-9">@Model.MaNCC</dd>
+
+                        <dt class="col-sm-3">Số hiệu sản phẩm</dt>
+                        <dd class="col-sm-9">@Model.TenAlias</dd>
+
+                        <dt class="col-sm-3">Bảo hành</dt>
+                        <dd class="col-sm-9">2 năm</dd>
+
+                        <dt class="col-sm-3">Thời gian giao hàng</dt>
+                        <dd class="col-sm-9">3-4 ngày</dd>
+
+                        <dt class="col-sm-3">Tình trạng</dt>
+                        <dd class="col-sm-9">Còn hàng</dd>
+                    </dl>
+                    <div class="form-row mt-4">
+                        <div class="form-group col-md flex-grow-0">
+                            <div class="input-group mb-3 input-spinner">
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-light" type="button" id="button-minus"> &minus; </button>
+                                </div>
+                                <input type="number" class="form-control" value="1" id="ipQuantity">
+                                <div class="input-group-append">
+                                    <button class="btn btn-light" type="button" id="button-plus"> + </button>
+                                </div>
+                            </div>
+                        </div> <!-- col.// -->
+                        <div class="form-group col-md">
+                            <a href="#" class="btn btn-primary" id="addtocart">
+                                <i class="fas fa-shopping-cart"></i> <span class="text">Thêm vào giỏ hàng</span>
+                            </a>
+                        </div> <!-- col.// -->
+                    </div> <!-- row.// -->
+                </article> <!-- product-info-aside .// -->
+            </main> <!-- col.// -->
+        </div> <!-- row.// -->
+        <!-- ================ CHI TIẾT SẢN PHẨM KẾT THÚC .// ================= -->
+    </div> <!-- container .//  -->
+</section>

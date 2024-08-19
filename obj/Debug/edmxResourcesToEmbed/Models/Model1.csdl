@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Hshop2023Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="HangHoa">
+    <Key>
+      <PropertyRef Name="MaHH" />
+    </Key>
+    <Property Name="MaHH" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TenHH" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="TenAlias" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="MaLoai" Type="Int32" Nullable="false" />
+    <Property Name="MoTaDonVi" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="DonGia" Type="Double" />
+    <Property Name="Hinh" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="NgaySX" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="GiamGia" Type="Double" Nullable="false" />
+    <Property Name="SoLanXem" Type="Int32" Nullable="false" />
+    <Property Name="MoTa" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="MaNCC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="TypeId" Type="Int32" />
+    <NavigationProperty Name="Loai" Relationship="Hshop2023Model.FK_Products_Categories" FromRole="HangHoa" ToRole="Loai" />
+    <NavigationProperty Name="NhaCungCap" Relationship="Hshop2023Model.FK_Products_Suppliers" FromRole="HangHoa" ToRole="NhaCungCap" />
+  </EntityType>
+  <EntityContainer Name="HshopEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="HangHoas" EntityType="Self.HangHoa" />
+    <EntitySet Name="Loais" EntityType="Hshop2023Model.Loai" />
+    <AssociationSet Name="FK_Products_Categories" Association="Hshop2023Model.FK_Products_Categories">
+      <End Role="Loai" EntitySet="Loais" />
+      <End Role="HangHoa" EntitySet="HangHoas" />
+    </AssociationSet>
+    <EntitySet Name="NhaCungCaps" EntityType="Hshop2023Model.NhaCungCap" />
+    <AssociationSet Name="FK_Products_Suppliers" Association="Hshop2023Model.FK_Products_Suppliers">
+      <End Role="NhaCungCap" EntitySet="NhaCungCaps" />
+      <End Role="HangHoa" EntitySet="HangHoas" />
+    </AssociationSet>
+    <EntitySet Name="Users" EntityType="Hshop2023Model.User" />
+    <EntitySet Name="orders" EntityType="Hshop2023Model.order" />
+    <EntitySet Name="orderdetails" EntityType="Hshop2023Model.orderdetail" />
+  </EntityContainer>
+  <EntityType Name="Loai">
+    <Key>
+      <PropertyRef Name="MaLoai" />
+    </Key>
+    <Property Name="MaLoai" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TenLoai" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="TenLoaiAlias" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="MoTa" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Hinh" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ShowOnHomePage" Type="Boolean" />
+    <NavigationProperty Name="HangHoas" Relationship="Hshop2023Model.FK_Products_Categories" FromRole="Loai" ToRole="HangHoa" />
+  </EntityType>
+  <Association Name="FK_Products_Categories">
+    <End Type="Hshop2023Model.Loai" Role="Loai" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="Hshop2023Model.HangHoa" Role="HangHoa" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Loai">
+        <PropertyRef Name="MaLoai" />
+      </Principal>
+      <Dependent Role="HangHoa">
+        <PropertyRef Name="MaLoai" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="NhaCungCap">
+    <Key>
+      <PropertyRef Name="MaNCC" />
+    </Key>
+    <Property Name="MaNCC" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="TenCongTy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Logo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="NguoiLienLac" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="DienThoai" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="DiaChi" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="MoTa" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="HangHoas" Relationship="Hshop2023Model.FK_Products_Suppliers" FromRole="NhaCungCap" ToRole="HangHoa" />
+  </EntityType>
+  <Association Name="FK_Products_Suppliers">
+    <End Type="Hshop2023Model.NhaCungCap" Role="NhaCungCap" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="Hshop2023Model.HangHoa" Role="HangHoa" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NhaCungCap">
+        <PropertyRef Name="MaNCC" />
+      </Principal>
+      <Dependent Role="HangHoa">
+        <PropertyRef Name="MaNCC" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="MaKH" />
+    </Key>
+    <Property Name="MaKH" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MatKhau" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="HoTen" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="GioiTinh" Type="Boolean" />
+    <Property Name="NgaySinh" Type="DateTime" Precision="0" />
+    <Property Name="DiaChi" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="DienThoai" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Hinh" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="VaiTro" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Username" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="order">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedOnUtc" Type="Int32" Nullable="false" />
+    <Property Name="Address" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="Int32" Nullable="false" />
+    <Property Name="Amount" Type="Double" />
+  </EntityType>
+  <EntityType Name="orderdetail">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="order_id" Type="Int32" Nullable="false" />
+    <Property Name="product_id" Type="Int32" Nullable="false" />
+    <Property Name="price" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+    <Property Name="qty" Type="Int32" Nullable="false" />
+    <Property Name="discount" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+    <Property Name="amount" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+    <Property Name="created_at" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="updated_at" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+</Schema>
